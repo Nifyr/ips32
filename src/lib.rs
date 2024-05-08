@@ -97,17 +97,17 @@ impl<'a> Hunk<'a> {
 }
 
 fn ips(input: &[u8]) -> IResult<&[u8], Patch> {
-    let (input, _) = tag(b"PATCH")(input)?;
+    let (input, _) = tag(b"IPS32")(input)?;
     let (input, hunks) = many0(hunk)(input)?;
-    let (input, _) = tag(b"EOF")(input)?;
+    let (input, _) = tag(b"EEOF")(input)?;
 
-    let (input, truncation) = opt(be_int(3))(input)?;
+    let (input, truncation) = opt(be_int(4))(input)?;
 
     Ok((input, Patch { hunks, truncation }))
 }
 
 fn hunk(input: &[u8]) -> IResult<&[u8], Hunk> {
-    let (input, offset) = be_int(3)(input)?;
+    let (input, offset) = be_int(4)(input)?;
     let (input, len) = be_int(2)(input)?;
 
     let (input, payload) = if len == 0 {
